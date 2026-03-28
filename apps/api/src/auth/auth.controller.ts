@@ -7,7 +7,7 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard"
 import { JwtRefreshGuard } from "./guards/jwt-refresh.guard"
 import { CurrentUser } from "./decorators/current-user.decorator"
 
-@Controller("api/auth")
+@Controller("auth")
 export class AuthController {
   constructor(private auth: AuthService) {}
 
