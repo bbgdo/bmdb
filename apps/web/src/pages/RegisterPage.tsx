@@ -4,11 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate } from "react-router-dom"
 import { registerUser } from "@/api/auth"
 import { registerSchema, type RegisterInput } from "@/lib/validations"
+import { getErrorMessage } from "@/lib/errors"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { AxiosError } from "axios"
 
 const RegisterPage = () => {
   const navigate = useNavigate()
@@ -26,9 +26,7 @@ const RegisterPage = () => {
       await registerUser(data)
       navigate("/login?registered=1")
     } catch (err) {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.message || "Registration failed")
-      }
+      setError(getErrorMessage(err))
     }
   }
 

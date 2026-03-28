@@ -39,6 +39,9 @@ model Movie {
   actors      ActorOnMovie[]
   directors   DirectorOnMovie[]
   reviews     Review[]
+
+  @@index([isActive])
+  @@index([releaseYear])
 }
 
 model Genre {
@@ -93,7 +96,7 @@ model DirectorOnMovie {
 model Review {
   id        String   @id @default(cuid())
   text      String
-  rating    Int
+  rating    Int      @db.SmallInt
   createdAt DateTime @default(now())
   userId    String
   movieId   String
@@ -101,4 +104,6 @@ model Review {
   movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
   @@unique([userId, movieId])
+  @@index([movieId])
+  @@index([userId])
 }

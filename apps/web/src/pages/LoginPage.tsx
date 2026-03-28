@@ -5,11 +5,11 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { loginUser } from "@/api/auth"
 import { useAuth } from "@/context/auth.context"
 import { loginSchema, type LoginInput } from "@/lib/validations"
+import { getErrorMessage } from "@/lib/errors"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { AxiosError } from "axios"
 
 const LoginPage = () => {
   const navigate = useNavigate()
@@ -31,9 +31,7 @@ const LoginPage = () => {
       await refetch()
       navigate("/")
     } catch (err) {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.message || "Invalid credentials")
-      }
+      setError(getErrorMessage(err))
     }
   }
 
