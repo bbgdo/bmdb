@@ -19,6 +19,7 @@
     "@nestjs/passport": "^10",
     "@nestjs/graphql": "^12",
     "@nestjs/mapped-types": "^2",
+    "@nestjs/apollo": "^12",
     "@apollo/server": "^4",
     "@prisma/client": "^5",
     "passport": "^0.7",

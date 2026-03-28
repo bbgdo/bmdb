@@ -5,5 +5,6 @@ import { DirectorsService } from "./directors.service"
 @Module({
   controllers: [DirectorsController],
   providers: [DirectorsService],
+  exports: [DirectorsService],
 })
 export class DirectorsModule {}

@@ -8,9 +8,9 @@ import { AppModule } from "./app.module"
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule)
 
-  app.setGlobalPrefix("api")
+  app.setGlobalPrefix("api", { exclude: ["graphql"] })
   app.use(cookieParser())
-  app.use(helmet())
+  app.use(helmet({ contentSecurityPolicy: false }))
 
   app.useGlobalPipes(
     new ValidationPipe({

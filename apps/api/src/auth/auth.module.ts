@@ -8,6 +8,8 @@ import { JwtStrategy } from "./jwt.strategy"
 import { JwtRefreshStrategy } from "./jwt-refresh.strategy"
 import { RolesGuard } from "./guards/roles.guard"
 import { JwtAuthGuard } from "./guards/jwt-auth.guard"
+import { GqlJwtAuthGuard } from "./guards/gql-jwt-auth.guard"
+import { GqlRolesGuard } from "./guards/gql-roles.guard"
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard"
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard],
-  exports: [JwtAuthGuard, RolesGuard],
+  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard, GqlJwtAuthGuard, GqlRolesGuard],
+  exports: [JwtAuthGuard, RolesGuard, GqlJwtAuthGuard, GqlRolesGuard],
 })
 export class AuthModule {}
