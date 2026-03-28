@@ -3,9 +3,10 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "dev": "ts-node --esm src/main.ts",
+    "dev": "ts-node -r tsconfig-paths/register src/main.ts",
     "build": "tsc",
     "start": "node dist/main.js",
+    "seed": "ts-node -r tsconfig-paths/register src/seed.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
   },
@@ -38,8 +39,10 @@
     "@types/passport-local": "*",
     "@types/cookie-parser": "*",
     "@types/express": "*",
+    "@types/node": "^20",
     "prisma": "^5",
     "ts-node": "*",
+    "tsconfig-paths": "*",
     "typescript": "^5"
   }
 }
