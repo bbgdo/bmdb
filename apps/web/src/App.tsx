@@ -4,11 +4,17 @@ import { ApolloProvider } from "@apollo/client"
 import apolloClient from "@/lib/apollo"
 import { AuthProvider } from "@/context/auth.context"
 import Layout from "@/components/Layout"
+import ProtectedRoute from "@/components/ProtectedRoute"
 import HomePage from "@/pages/HomePage"
 import MoviePage from "@/pages/MoviePage"
 import LoginPage from "@/pages/LoginPage"
 import RegisterPage from "@/pages/RegisterPage"
 import VerifyEmailPage from "@/pages/VerifyEmailPage"
+import AdminLayout from "@/pages/admin/AdminLayout"
+import MoviesPage from "@/pages/admin/MoviesPage"
+import GenresPage from "@/pages/admin/GenresPage"
+import ActorsPage from "@/pages/admin/ActorsPage"
+import DirectorsPage from "@/pages/admin/DirectorsPage"
 
 const queryClient = new QueryClient()
 
@@ -24,6 +30,20 @@ const App = () => (
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
               <Route path="verify-email" element={<VerifyEmailPage />} />
+              <Route
+                path="admin"
+                element={
+                  <ProtectedRoute requiredRole="ADMIN">
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to="movies" replace />} />
+                <Route path="movies" element={<MoviesPage />} />
+                <Route path="genres" element={<GenresPage />} />
+                <Route path="actors" element={<ActorsPage />} />
+                <Route path="directors" element={<DirectorsPage />} />
+              </Route>
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>
