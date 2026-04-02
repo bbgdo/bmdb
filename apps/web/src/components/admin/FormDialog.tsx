@@ -14,7 +14,7 @@ type Props = {
 
 const FormDialog = ({ open, title, onClose, children }: Props) => (
   <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-    <DialogContent>
+    <DialogContent aria-describedby={undefined}>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
       </DialogHeader>

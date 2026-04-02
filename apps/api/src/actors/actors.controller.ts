@@ -6,7 +6,7 @@ import { Role } from "@prisma/client"
 import { ActorsService } from "./actors.service"
 import { CreateActorDto } from "./dto/create-actor.dto"
 import { UpdateActorDto } from "./dto/update-actor.dto"
-import { PaginationDto } from "../common/pagination.dto"
+import { QueryActorDto } from "./dto/query-actor.dto"
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
 import { RolesGuard } from "../auth/guards/roles.guard"
 import { Roles } from "../auth/decorators/roles.decorator"
@@ -16,7 +16,7 @@ export class ActorsController {
   constructor(private actors: ActorsService) {}
 
   @Get()
-  findAll(@Query() query: PaginationDto & { search?: string }) {
+  findAll(@Query() query: QueryActorDto) {
     return this.actors.findAll(query)
   }
 

@@ -26,7 +26,7 @@ const ConfirmDialog = ({
   loading,
 }: Props) => (
   <Dialog open={open} onOpenChange={(v) => !v && onCancel()}>
-    <DialogContent>
+    <DialogContent aria-describedby={undefined}>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>

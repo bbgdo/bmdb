@@ -6,7 +6,7 @@ import { Role } from "@prisma/client"
 import { DirectorsService } from "./directors.service"
 import { CreateDirectorDto } from "./dto/create-director.dto"
 import { UpdateDirectorDto } from "./dto/update-director.dto"
-import { PaginationDto } from "../common/pagination.dto"
+import { QueryDirectorDto } from "./dto/query-director.dto"
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
 import { RolesGuard } from "../auth/guards/roles.guard"
 import { Roles } from "../auth/decorators/roles.decorator"
@@ -16,7 +16,7 @@ export class DirectorsController {
   constructor(private directors: DirectorsService) {}
 
   @Get()
-  findAll(@Query() query: PaginationDto & { search?: string }) {
+  findAll(@Query() query: QueryDirectorDto) {
     return this.directors.findAll(query)
   }
 
