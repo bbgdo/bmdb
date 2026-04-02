@@ -1,5 +1,5 @@
 import { useParams, Navigate } from "react-router-dom"
-import { useQuery, useMutation } from "@apollo/client"
+import { useQuery, useMutation } from "@apollo/client/react"
 import {
   MOVIE_QUERY,
   DELETE_REVIEW_MUTATION,

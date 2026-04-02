@@ -23,7 +23,7 @@ import { GqlRolesGuard } from "./guards/gql-roles.guard"
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard, GqlJwtAuthGuard, GqlRolesGuard],
+  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard, GqlJwtAuthGuard, GqlRolesGuard, JwtAuthGuard, RolesGuard],
   exports: [JwtAuthGuard, RolesGuard, GqlJwtAuthGuard, GqlRolesGuard],
 })
 export class AuthModule {}

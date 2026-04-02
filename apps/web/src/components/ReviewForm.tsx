@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client/react"
 import { z } from "zod"
 import { CREATE_REVIEW_MUTATION } from "@/api/movies.gql"
 import { Button } from "@/components/ui/button"

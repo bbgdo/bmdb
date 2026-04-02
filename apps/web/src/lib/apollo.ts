@@ -1,20 +1,14 @@
-import { ApolloClient, InMemoryCache, createHttpLink, from } from "@apollo/client"
-import { onError } from "@apollo/client/link/error"
-
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors)
-    graphQLErrors.forEach(({ message }) => console.error("[GQL]", message))
-  if (networkError) console.error("[Network]", networkError)
-})
-
-const httpLink = createHttpLink({
-  uri: "/graphql",
-  credentials: "include",
-})
+import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client"
 
 const client = new ApolloClient({
-  link: from([errorLink, httpLink]),
-  cache: new InMemoryCache(),
+	link: createHttpLink({
+		uri: "/graphql",
+		credentials: "include",
+	}),
+	cache: new InMemoryCache(),
+	defaultOptions: {
+		watchQuery: { fetchPolicy: "cache-and-network" },
+	},
 })
 
 export default client

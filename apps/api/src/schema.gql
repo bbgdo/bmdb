@@ -1,0 +1,173 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ActorType {
+  firstName: String!
+  id: ID!
+  lastName: String!
+  photoUrl: String
+}
+
+input CreateActorInput {
+  firstName: String!
+  lastName: String!
+  photoUrl: String
+}
+
+input CreateDirectorInput {
+  firstName: String!
+  lastName: String!
+  photoUrl: String
+}
+
+input CreateMovieInput {
+  actorIds: [String!]
+  description: String!
+  directorIds: [String!]
+  genreIds: [String!]
+  posterUrl: String
+  releaseYear: Int!
+  title: String!
+}
+
+input CreateReviewInput {
+  movieId: String!
+  rating: Int!
+  text: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type DirectorType {
+  firstName: String!
+  id: ID!
+  lastName: String!
+  photoUrl: String
+}
+
+type GenreType {
+  id: ID!
+  name: String!
+}
+
+input MovieFilterInput {
+  genreId: String
+  limit: Int
+  page: Int
+  search: String
+  year: Int
+}
+
+type MovieType {
+  actors: [ActorType]
+  createdAt: DateTime!
+  description: String!
+  directors: [DirectorType]
+  genres: [GenreType]
+  id: ID!
+  isActive: Boolean!
+  posterUrl: String
+  releaseYear: Int!
+  reviews: [ReviewType]
+  title: String!
+}
+
+type Mutation {
+  activateMovie(id: ID!): MovieType!
+  createActor(input: CreateActorInput!): ActorType!
+  createDirector(input: CreateDirectorInput!): DirectorType!
+  createGenre(name: String!): GenreType!
+  createMovie(input: CreateMovieInput!): MovieType!
+  createReview(input: CreateReviewInput!): ReviewType!
+  deactivateMovie(id: ID!): MovieType!
+  deleteActor(id: ID!): Boolean!
+  deleteDirector(id: ID!): Boolean!
+  deleteGenre(id: ID!): Boolean!
+  deleteMovie(id: ID!): Boolean!
+  deleteReview(id: ID!): Boolean!
+  updateActor(id: ID!, input: UpdateActorInput!): ActorType!
+  updateDirector(id: ID!, input: UpdateDirectorInput!): DirectorType!
+  updateGenre(id: ID!, name: String!): GenreType!
+  updateMovie(id: ID!, input: UpdateMovieInput!): MovieType!
+}
+
+type PaginatedActorsType {
+  data: [ActorType!]!
+  limit: Float!
+  page: Float!
+  total: Float!
+}
+
+type PaginatedDirectorsType {
+  data: [DirectorType!]!
+  limit: Float!
+  page: Float!
+  total: Float!
+}
+
+type PaginatedMoviesType {
+  data: [MovieType!]!
+  limit: Float!
+  page: Float!
+  total: Float!
+}
+
+type PaginatedReviewsType {
+  data: [ReviewType!]!
+  limit: Float!
+  page: Float!
+  total: Float!
+}
+
+type Query {
+  actor(id: ID!): ActorType!
+  actors(limit: Int, page: Int, search: String): PaginatedActorsType!
+  director(id: ID!): DirectorType!
+  directors(limit: Int, page: Int, search: String): PaginatedDirectorsType!
+  genre(id: ID!): GenreType!
+  genres: [GenreType!]!
+  movie(id: ID!): MovieType!
+  movieAdmin(id: ID!): MovieType!
+  movies(filter: MovieFilterInput): PaginatedMoviesType!
+  moviesAdmin(filter: MovieFilterInput): PaginatedMoviesType!
+  reviewsByMovie(limit: Int, movieId: ID!, page: Int): PaginatedReviewsType!
+}
+
+type ReviewAuthorType {
+  firstName: String!
+  lastName: String!
+}
+
+type ReviewType {
+  createdAt: DateTime!
+  id: ID!
+  rating: Int!
+  text: String!
+  user: ReviewAuthorType
+}
+
+input UpdateActorInput {
+  firstName: String
+  lastName: String
+  photoUrl: String
+}
+
+input UpdateDirectorInput {
+  firstName: String
+  lastName: String
+  photoUrl: String
+}
+
+input UpdateMovieInput {
+  actorIds: [String!]
+  description: String
+  directorIds: [String!]
+  genreIds: [String!]
+  posterUrl: String
+  releaseYear: Int
+  title: String
+}
