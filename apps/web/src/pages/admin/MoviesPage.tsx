@@ -72,14 +72,19 @@ const MoviesPage = () => {
   }
 
   useEffect(() => {
-    loadOptions()
+    void (async () => {
+      await loadOptions()
+    })()
   }, [])
 
   useEffect(() => {
-    loadMovies()
+    void (async () => {
+      await loadMovies()
+    })()
   }, [loadMovies])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(1)
   }, [debouncedSearch])
 
@@ -106,11 +111,15 @@ const MoviesPage = () => {
   }, [dialog, reset])
 
   const onSubmit = async (values: MovieInput) => {
-    const data = { ...values, posterUrl: values.posterUrl || undefined }
+    const payload = {
+      ...values,
+      posterUrl: values.posterUrl?.trim() || undefined,
+      releaseYear: Number(values.releaseYear),
+    }
     if (dialog.movie) {
-      await adminUpdateMovie(dialog.movie.id, data)
+      await adminUpdateMovie(dialog.movie.id, payload)
     } else {
-      await adminCreateMovie(data)
+      await adminCreateMovie(payload)
     }
     setDialog({ open: false })
     await loadMovies()

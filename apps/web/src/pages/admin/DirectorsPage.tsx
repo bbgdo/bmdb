@@ -37,7 +37,9 @@ const DirectorsPage = () => {
   }
 
   useEffect(() => {
-    load()
+    void (async () => {
+      await load()
+    })()
   }, [])
 
   const {

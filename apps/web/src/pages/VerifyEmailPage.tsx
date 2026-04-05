@@ -12,13 +12,18 @@ const VerifyEmailPage = () => {
   const token = searchParams.get("token")
 
   useEffect(() => {
-    if (!token) {
-      setStatus("error")
-      return
-    }
-    verifyEmail(token)
-      .then(() => setStatus("success"))
-      .catch(() => setStatus("error"))
+    void (async () => {
+      if (!token) {
+        setStatus("error")
+        return
+      }
+      try {
+        await verifyEmail(token)
+        setStatus("success")
+      } catch {
+        setStatus("error")
+      }
+    })()
   }, [token])
 
   return (

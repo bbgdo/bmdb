@@ -36,7 +36,9 @@ const GenresPage = () => {
   }
 
   useEffect(() => {
-    load()
+    void (async () => {
+      await load()
+    })()
   }, [])
 
   const {

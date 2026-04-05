@@ -37,7 +37,9 @@ const ActorsPage = () => {
   }
 
   useEffect(() => {
-    load()
+    void (async () => {
+      await load()
+    })()
   }, [])
 
   const {

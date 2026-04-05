@@ -29,7 +29,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   useEffect(() => {
-    refetch().finally(() => setIsLoading(false))
+    void (async () => {
+      await refetch().finally(() => setIsLoading(false))
+    })()
   }, [])
 
   return (
@@ -39,6 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error("useAuth must be used inside AuthProvider")
