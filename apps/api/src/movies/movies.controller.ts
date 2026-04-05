@@ -7,9 +7,9 @@ import { MoviesService } from "./movies.service"
 import { CreateMovieDto } from "./dto/create-movie.dto"
 import { UpdateMovieDto } from "./dto/update-movie.dto"
 import { FilterMovieDto } from "./dto/filter-movie.dto"
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
-import { RolesGuard } from "../auth/guards/roles.guard"
-import { Roles } from "../auth/decorators/roles.decorator"
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard"
+import { RolesGuard } from "@/auth/guards/roles.guard"
+import { Roles } from "@/auth/decorators/roles.decorator"
 
 interface JunctionMovie {
 	genres?: { genre: Record<string, unknown> }[]
