@@ -12,8 +12,18 @@ export default defineConfig({
   },
   server: {
     proxy: {
-		"/api": "http://localhost:3001",
-		"/graphql": "http://localhost:3001",
-	},
+      "/api": {
+        target: "http://localhost:3001",
+        configure: (proxy) => {
+          proxy.on("error", () => {});
+        },
+      },
+      "/graphql": {
+        target: "http://localhost:3001",
+        configure: (proxy) => {
+          proxy.on("error", () => {});
+        },
+      },
+    },
   },
 })

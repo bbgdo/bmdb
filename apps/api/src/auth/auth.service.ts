@@ -30,13 +30,14 @@ export class AuthService {
 	register = async (dto: RegisterDto): Promise<{ message: string }> => {
 		const existing = await this.prisma.user.findUnique({ where: { email: dto.email } })
 
+		if (existing && existing.isVerified) {
+			throw new ConflictException("Email already in use")
+		}
+
 		const passwordHash = await bcrypt.hash(dto.password, 12)
 		const verifyToken = crypto.randomUUID()
 
 		if (existing) {
-			if (existing.isVerified) {
-				throw new ConflictException("Email already in use")
-			}
 			// Existing but unverified — allow re-registration with fresh data
 			await this.prisma.user.update({
 				where: { id: existing.id },
@@ -65,13 +66,9 @@ export class AuthService {
 			this.logger.warn(
 				`Failed to send verification email to ${dto.email}: ${err instanceof Error ? err.message : err}`,
 			)
-			// Auto-verify when email delivery is unavailable (dev environment)
-			await this.prisma.user.update({
-				where: { email: dto.email },
-				data: { isVerified: true, verifyToken: null },
-			})
-			return { message: "Account created (auto-verified, email not configured)" }
+			return { message: "Account created but verification email could not be sent. Check server email configuration." }
 		}
+
 		return { message: "Check your email" }
 	}
 
