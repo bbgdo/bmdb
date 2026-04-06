@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 import { verifyEmail } from "@/api/auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -6,25 +6,37 @@ import { Button } from "@/components/ui/button"
 
 type Status = "loading" | "success" | "error"
 
+// Module-level cache survives React StrictMode unmount/remount cycles,
+// preventing the token from being consumed twice (second call would fail
+// because the token is already nulled in the DB after the first call).
+const tokenResultCache = new Map<string, "success" | "error">()
+
 const VerifyEmailPage = () => {
 	const [searchParams] = useSearchParams()
-	const [status, setStatus] = useState<Status>("loading")
 	const token = searchParams.get("token")
-	const calledRef = useRef(false)
+	const [status, setStatus] = useState<Status>(() => {
+		if (!token) return "error"
+		return tokenResultCache.get(token) ?? "loading"
+	})
 
 	useEffect(() => {
-		if (calledRef.current) return
-		calledRef.current = true
+		if (!token) {
+			setStatus("error")
+			return
+		}
+		const cached = tokenResultCache.get(token)
+		if (cached) {
+			setStatus(cached)
+			return
+		}
 
 		void (async () => {
-			if (!token) {
-				setStatus("error")
-				return
-			}
 			try {
 				await verifyEmail(token)
+				tokenResultCache.set(token, "success")
 				setStatus("success")
 			} catch {
+				tokenResultCache.set(token, "error")
 				setStatus("error")
 			}
 		})()
