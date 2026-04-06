@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
-import { PrismaService } from "../prisma/prisma.service"
+import { PrismaService } from "@/prisma/prisma.service"
 import { CreateDirectorDto } from "./dto/create-director.dto"
 import { UpdateDirectorDto } from "./dto/update-director.dto"
-import { PaginationDto } from "../common/pagination.dto"
-import { paginate } from "../common/paginate"
+import { PaginationDto } from "@/common/pagination.dto"
+import { paginate } from "@/common/paginate"
 
 @Injectable()
 export class DirectorsService {

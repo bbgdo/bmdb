@@ -6,9 +6,9 @@ import { Role } from "@prisma/client"
 import { GenresService } from "./genres.service"
 import { CreateGenreDto } from "./dto/create-genre.dto"
 import { UpdateGenreDto } from "./dto/update-genre.dto"
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
-import { RolesGuard } from "../auth/guards/roles.guard"
-import { Roles } from "../auth/decorators/roles.decorator"
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard"
+import { RolesGuard } from "@/auth/guards/roles.guard"
+import { Roles } from "@/auth/decorators/roles.decorator"
 
 @Controller("genres")
 export class GenresController {

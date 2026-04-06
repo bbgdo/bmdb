@@ -1,12 +1,12 @@
 import { Resolver, Query, Mutation, Args, ID, Int } from "@nestjs/graphql"
 import { UseGuards } from "@nestjs/common"
 import { Role } from "@prisma/client"
-import { ActorsService } from "../../actors/actors.service"
+import { ActorsService } from "@/actors/actors.service"
 import { ActorType, PaginatedActorsType } from "../types/actor.type"
 import { CreateActorInput, UpdateActorInput } from "../inputs/create-actor.input"
-import { GqlJwtAuthGuard } from "../../auth/guards/gql-jwt-auth.guard"
-import { GqlRolesGuard } from "../../auth/guards/gql-roles.guard"
-import { Roles } from "../../auth/decorators/roles.decorator"
+import { GqlJwtAuthGuard } from "@/auth/guards/gql-jwt-auth.guard"
+import { GqlRolesGuard } from "@/auth/guards/gql-roles.guard"
+import { Roles } from "@/auth/decorators/roles.decorator"
 
 @Resolver(() => ActorType)
 export class ActorsResolver {

@@ -149,7 +149,7 @@ const MOVIES: MovieData[] = [
       "A FedEx executive undergoes a physical and emotional transformation after crash landing on a deserted island.",
     releaseYear: 2000,
     posterUrl:
-      "https://m.media-amazon.com/images/M/MV5BN2Y5ZTU4YjctYWRhNy00NTZiLWIwMmItZWQ4OTdlZjQ5YWFhXkEyXkFqcGdeQXVyNTc1NTQxODI@._V1_.jpg",
+      "https://m.media-amazon.com/images/M/MV5BYTI2Mzg1ZWUtYmI0Zi00ZDIzLWIzZjEtZGE3ZWZlYTQ3YmM1XkEyXkFqcGc@._V1_.jpg",
     directorNames: [],
     actorNames: [["Tom", "Hanks"]],
     genreNames: ["Drama"],

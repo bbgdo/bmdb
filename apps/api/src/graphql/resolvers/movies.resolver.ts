@@ -1,14 +1,14 @@
 import { Resolver, Query, Mutation, Args, ID } from "@nestjs/graphql"
 import { UseGuards } from "@nestjs/common"
 import { Role } from "@prisma/client"
-import { MoviesService } from "../../movies/movies.service"
+import { MoviesService } from "@/movies/movies.service"
 import { MovieType, PaginatedMoviesType } from "../types/movie.type"
 import { MovieFilterInput } from "../inputs/movie-filter.input"
 import { CreateMovieInput } from "../inputs/create-movie.input"
 import { UpdateMovieInput } from "../inputs/update-movie.input"
-import { GqlJwtAuthGuard } from "../../auth/guards/gql-jwt-auth.guard"
-import { GqlRolesGuard } from "../../auth/guards/gql-roles.guard"
-import { Roles } from "../../auth/decorators/roles.decorator"
+import { GqlJwtAuthGuard } from "@/auth/guards/gql-jwt-auth.guard"
+import { GqlRolesGuard } from "@/auth/guards/gql-roles.guard"
+import { Roles } from "@/auth/decorators/roles.decorator"
 
 interface JunctionMovie {
   genres?: { genre: Record<string, unknown> }[]

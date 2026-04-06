@@ -5,9 +5,9 @@ import {
 import { Role } from "@prisma/client"
 import { ReviewsService } from "./reviews.service"
 import { CreateReviewDto } from "./dto/create-review.dto"
-import { PaginationDto } from "../common/pagination.dto"
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
-import { CurrentUser } from "../auth/decorators/current-user.decorator"
+import { PaginationDto } from "@/common/pagination.dto"
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard"
+import { CurrentUser } from "@/auth/decorators/current-user.decorator"
 
 @Controller("reviews")
 export class ReviewsController {

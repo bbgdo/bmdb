@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
-import { PrismaService } from "../prisma/prisma.service"
+import { PrismaService } from "@/prisma/prisma.service"
 import { CreateActorDto } from "./dto/create-actor.dto"
 import { UpdateActorDto } from "./dto/update-actor.dto"
-import { PaginationDto } from "../common/pagination.dto"
-import { paginate } from "../common/paginate"
+import { PaginationDto } from "@/common/pagination.dto"
+import { paginate } from "@/common/paginate"
 
 @Injectable()
 export class ActorsService {

@@ -1,5 +1,5 @@
 import { Injectable, ConflictException, NotFoundException } from "@nestjs/common"
-import { PrismaService } from "../prisma/prisma.service"
+import { PrismaService } from "@/prisma/prisma.service"
 import { CreateGenreDto } from "./dto/create-genre.dto"
 import { UpdateGenreDto } from "./dto/update-genre.dto"
 

@@ -1,10 +1,10 @@
 import { Resolver, Query, Mutation, Args, ID, Int, Context } from "@nestjs/graphql"
 import { UseGuards } from "@nestjs/common"
 import { Role } from "@prisma/client"
-import { ReviewsService } from "../../reviews/reviews.service"
+import { ReviewsService } from "@/reviews/reviews.service"
 import { ReviewType, PaginatedReviewsType } from "../types/review.type"
 import { CreateReviewInput } from "../inputs/create-review.input"
-import { GqlJwtAuthGuard } from "../../auth/guards/gql-jwt-auth.guard"
+import { GqlJwtAuthGuard } from "@/auth/guards/gql-jwt-auth.guard"
 
 @Resolver(() => ReviewType)
 export class ReviewsResolver {

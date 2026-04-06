@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
 import { Prisma } from "@prisma/client"
-import { PrismaService } from "../prisma/prisma.service"
+import { PrismaService } from "@/prisma/prisma.service"
 import { CreateMovieDto } from "./dto/create-movie.dto"
 import { UpdateMovieDto } from "./dto/update-movie.dto"
 import { FilterMovieDto } from "./dto/filter-movie.dto"
-import { paginate } from "../common/paginate"
+import { paginate } from "@/common/paginate"
 
 const movieInclude = {
   genres: { include: { genre: true } },

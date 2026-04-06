@@ -1,12 +1,12 @@
 import { Resolver, Query, Mutation, Args, ID, Int } from "@nestjs/graphql"
 import { UseGuards } from "@nestjs/common"
 import { Role } from "@prisma/client"
-import { DirectorsService } from "../../directors/directors.service"
+import { DirectorsService } from "@/directors/directors.service"
 import { DirectorType, PaginatedDirectorsType } from "../types/director.type"
 import { CreateDirectorInput, UpdateDirectorInput } from "../inputs/create-director.input"
-import { GqlJwtAuthGuard } from "../../auth/guards/gql-jwt-auth.guard"
-import { GqlRolesGuard } from "../../auth/guards/gql-roles.guard"
-import { Roles } from "../../auth/decorators/roles.decorator"
+import { GqlJwtAuthGuard } from "@/auth/guards/gql-jwt-auth.guard"
+import { GqlRolesGuard } from "@/auth/guards/gql-roles.guard"
+import { Roles } from "@/auth/decorators/roles.decorator"
 
 @Resolver(() => DirectorType)
 export class DirectorsResolver {

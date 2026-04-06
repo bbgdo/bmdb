@@ -7,9 +7,9 @@ import { ActorsService } from "./actors.service"
 import { CreateActorDto } from "./dto/create-actor.dto"
 import { UpdateActorDto } from "./dto/update-actor.dto"
 import { QueryActorDto } from "./dto/query-actor.dto"
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
-import { RolesGuard } from "../auth/guards/roles.guard"
-import { Roles } from "../auth/decorators/roles.decorator"
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard"
+import { RolesGuard } from "@/auth/guards/roles.guard"
+import { Roles } from "@/auth/decorators/roles.decorator"
 
 @Controller("actors")
 export class ActorsController {

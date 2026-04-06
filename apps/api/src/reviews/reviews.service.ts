@@ -2,10 +2,10 @@ import {
   Injectable, NotFoundException, ConflictException, ForbiddenException,
 } from "@nestjs/common"
 import { Role } from "@prisma/client"
-import { PrismaService } from "../prisma/prisma.service"
+import { PrismaService } from "@/prisma/prisma.service"
 import { CreateReviewDto } from "./dto/create-review.dto"
-import { PaginationDto } from "../common/pagination.dto"
-import { paginate } from "../common/paginate"
+import { PaginationDto } from "@/common/pagination.dto"
+import { paginate } from "@/common/paginate"
 
 const reviewInclude = {
   user: { select: { firstName: true, lastName: true } },

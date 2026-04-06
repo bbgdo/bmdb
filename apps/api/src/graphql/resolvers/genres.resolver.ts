@@ -1,11 +1,11 @@
 import { Resolver, Query, Mutation, Args, ID } from "@nestjs/graphql"
 import { UseGuards } from "@nestjs/common"
 import { Role } from "@prisma/client"
-import { GenresService } from "../../genres/genres.service"
+import { GenresService } from "@/genres/genres.service"
 import { GenreType } from "../types/genre.type"
-import { GqlJwtAuthGuard } from "../../auth/guards/gql-jwt-auth.guard"
-import { GqlRolesGuard } from "../../auth/guards/gql-roles.guard"
-import { Roles } from "../../auth/decorators/roles.decorator"
+import { GqlJwtAuthGuard } from "@/auth/guards/gql-jwt-auth.guard"
+import { GqlRolesGuard } from "@/auth/guards/gql-roles.guard"
+import { Roles } from "@/auth/decorators/roles.decorator"
 
 @Resolver(() => GenreType)
 export class GenresResolver {

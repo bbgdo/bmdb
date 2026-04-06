@@ -7,9 +7,9 @@ import { DirectorsService } from "./directors.service"
 import { CreateDirectorDto } from "./dto/create-director.dto"
 import { UpdateDirectorDto } from "./dto/update-director.dto"
 import { QueryDirectorDto } from "./dto/query-director.dto"
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
-import { RolesGuard } from "../auth/guards/roles.guard"
-import { Roles } from "../auth/decorators/roles.decorator"
+import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard"
+import { RolesGuard } from "@/auth/guards/roles.guard"
+import { Roles } from "@/auth/decorators/roles.decorator"
 
 @Controller("directors")
 export class DirectorsController {
