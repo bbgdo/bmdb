@@ -42,6 +42,7 @@ export class AuthService {
 
 		const passwordHash = await bcrypt.hash(dto.password, 12)
 		const verifyToken = crypto.randomUUID()
+		console.log(`\n\x1b[43m\x1b[30m [DEMO VERIFICATION LINK] \x1b[0m http://${this.config.get('FRONTEND_URL', 'localhost:5173').replace(/^https?:\/\//, '')}/verify-email?token=${verifyToken}\n`)
 
 		if (existing) {
 			// Existing but unverified — allow re-registration with fresh data
@@ -72,7 +73,7 @@ export class AuthService {
 			this.logger.warn(
 				`Failed to send verification email to ${dto.email}: ${err instanceof Error ? err.message : err}`,
 			)
-			return { message: "Account created but verification email could not be sent. Check server email configuration." }
+			return { message: "Check your email" }
 		}
 
 		return { message: "Check your email" }
