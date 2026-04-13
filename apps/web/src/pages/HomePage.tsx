@@ -34,6 +34,7 @@ const HomePage = () => {
           limit: LIMIT,
         },
       },
+      pollInterval: 30000,
     },
   )
 
