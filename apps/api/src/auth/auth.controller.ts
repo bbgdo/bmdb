@@ -1,5 +1,5 @@
 import { Controller, Post, Get, Body, Query, UseGuards, Res } from "@nestjs/common"
-import { Throttle } from "@nestjs/throttler"
+import { SkipThrottle, Throttle } from "@nestjs/throttler"
 import { Response } from "express"
 import { AuthService } from "./auth.service"
 import { RegisterDto } from "./dto/register.dto"
@@ -45,7 +45,8 @@ export class AuthController {
 
   @Get("me")
   @UseGuards(JwtAuthGuard)
-  me(@CurrentUser() user: { id: string; email: string; role: string }) {
-    return user
+  @SkipThrottle()
+  me(@CurrentUser() user: { id: string }) {
+    return this.auth.getMe(user.id)
   }
 }

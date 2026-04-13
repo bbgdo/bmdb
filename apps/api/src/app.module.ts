@@ -21,8 +21,8 @@ import { GqlThrottlerGuard } from "./common/guards/gql-throttler.guard"
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
 		ThrottlerModule.forRoot([
-			{ name: "short", ttl: 1000, limit: 10 },
-			{ name: "long", ttl: 60000, limit: 100 },
+			{ name: "short", ttl: 1000, limit: 50 },
+			{ name: "long", ttl: 60000, limit: 500 },
 		]),
 		GraphQLModule.forRoot<ApolloDriverConfig>({
 			driver: ApolloDriver,

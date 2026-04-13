@@ -27,6 +27,12 @@ export class AuthService {
 		private mail: MailService,
 	) {}
 
+	getMe = (userId: string) =>
+		this.prisma.user.findUnique({
+			where: { id: userId },
+			select: { id: true, email: true, role: true, firstName: true, lastName: true },
+		})
+
 	register = async (dto: RegisterDto): Promise<{ message: string }> => {
 		const existing = await this.prisma.user.findUnique({ where: { email: dto.email } })
 
