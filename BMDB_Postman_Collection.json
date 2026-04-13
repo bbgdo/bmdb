@@ -1,0 +1,2158 @@
+{
+  "collection": {
+    "info": {
+      "_postman_id": "ed8144b7-7078-4b2e-a86e-fa97328a18cc",
+      "name": "BMDB – Full API (REST + GraphQL)",
+      "description": "Повна колекція для проєкту BMDB (Ресурсний центр).\n\nПеред використанням:\n1. Виберіть Environment «BMDB Local»\n2. Виконайте POST /auth/login щоб отримати cookie\n3. Cookies зберігаються автоматично в Postman Cookie Jar",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "🔐 Auth",
+        "description": "Реєстрація, верифікація, логін, логаут, refresh, /me",
+        "item": [
+          {
+            "name": "Register (нова реєстрація)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/auth/register",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "auth",
+                  "register"
+                ]
+              },
+              "description": "Реєструє нового користувача. Надсилає лист з посиланням на верифікацію.\nПісля відповіді перевір пошту і скопіюй token у змінну {{verifyToken}}.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"firstName\": \"Ivan\",\n  \"lastName\": \"Kovalenko\",\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"Test1234!\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "pm.test(\"Has message\", () => pm.expect(pm.response.json().message).to.include(\"email\"));"
+                  ]
+                }
+              }
+            ],
+            "id": "6916a4a9-e379-49dc-b4ee-569bafcadae5"
+          },
+          {
+            "name": "Verify Email (підтвердження пошти)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/auth/verify-email?token={{verifyToken}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "auth",
+                  "verify-email?token={{verifyToken}}"
+                ]
+              },
+              "description": "Підтверджує email через токен з листа.\nТокен вставляй у Environment Variable: verifyToken"
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "pm.test(\"Verified\", () => pm.expect(pm.response.json().message).to.include(\"verified\"));"
+                  ]
+                }
+              }
+            ],
+            "id": "8e412cb2-65e4-4f36-be0e-ead160f46a11"
+          },
+          {
+            "name": "Login (USER)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/auth/login",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "auth",
+                  "login"
+                ]
+              },
+              "description": "Логін звичайного користувача.\n✅ Після успішного логіну Postman автоматично збереже httpOnly cookie (access_token + refresh_token) у Cookie Jar.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"Test1234!\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "pm.test(\"Logged in\", () => pm.expect(pm.response.json().message).to.include(\"Logged\"));",
+                    "console.log(\"✅ Cookies set. Перевір Cookies tab у верхньому рядку Postman.\");"
+                  ]
+                }
+              }
+            ],
+            "id": "ad4bff48-c30e-43fa-9edb-8ad9470869b1"
+          },
+          {
+            "name": "Login (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/auth/login",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "auth",
+                  "login"
+                ]
+              },
+              "description": "Логін адміністратора.\nЗмінні adminEmail / adminPassword задай у Environment після seed-у БД.\n✅ Cookie оновиться автоматично.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "pm.test(\"Admin logged in\", () => pm.expect(pm.response.json().message).to.include(\"Logged\"));",
+                    "console.log(\"✅ Admin cookies set.\");"
+                  ]
+                }
+              }
+            ],
+            "id": "dd6c32a2-ff26-44c0-8275-ec789794b4fd"
+          },
+          {
+            "name": "GET /me (поточний юзер)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/auth/me",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "auth",
+                  "me"
+                ]
+              },
+              "description": "Повертає дані поточного авторизованого користувача з cookie."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "const u = pm.response.json();",
+                    "pm.test(\"Has user id\", () => pm.expect(u.id).to.be.a(\"string\"));",
+                    "pm.environment.set(\"currentUserId\", u.id);",
+                    "pm.environment.set(\"currentUserRole\", u.role);",
+                    "console.log(\"Current user:\", u.email, \"| role:\", u.role);"
+                  ]
+                }
+              }
+            ],
+            "id": "49faed74-1ca7-4695-a7af-dc1408bc37d5"
+          },
+          {
+            "name": "Refresh tokens",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/auth/refresh",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "auth",
+                  "refresh"
+                ]
+              },
+              "description": "Оновлює access_token та refresh_token через refresh_token cookie.\nВикористовуй якщо отримав 401 на захищений маршрут."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "24a0f1c6-8e5c-43c7-84e3-56dba2d0190f"
+          },
+          {
+            "name": "Logout",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/auth/logout",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "auth",
+                  "logout"
+                ]
+              },
+              "description": "Видаляє cookies та інвалідує refresh token у БД."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "pm.test(\"Logged out\", () => pm.expect(pm.response.json().message).to.include(\"out\"));"
+                  ]
+                }
+              }
+            ],
+            "id": "af4be5f6-3875-4a22-a751-d9190f22a062"
+          }
+        ],
+        "id": "1be6b806-58ab-4558-8b84-d64715cebba4"
+      },
+      {
+        "name": "🎬 REST › Movies",
+        "description": "CRUD + activate/deactivate для фільмів",
+        "item": [
+          {
+            "name": "GET /movies (публічний список)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies"
+                ]
+              },
+              "description": "Повертає активні фільми з пагінацією.\nQuery params: search, genreId, year, page, limit"
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "const r = pm.response.json();",
+                    "pm.test(\"Has data array\", () => pm.expect(r.data).to.be.an(\"array\"));",
+                    "pm.test(\"Has total\", () => pm.expect(r.total).to.be.a(\"number\"));",
+                    "if (r.data[0]) { pm.environment.set(\"movieId\", r.data[0].id); console.log(\"movieId set:\", r.data[0].id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "cc491b20-0141-4128-9a2b-1ced90ba6805"
+          },
+          {
+            "name": "GET /movies?search=…&genreId=… (фільтр)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies"
+                ],
+                "query": [
+                  {
+                    "key": "search",
+                    "value": "Matrix",
+                    "description": "Пошук по назві"
+                  },
+                  {
+                    "key": "genreId",
+                    "value": "{{genreId}}",
+                    "description": "Фільтр по жанру",
+                    "disabled": true
+                  },
+                  {
+                    "key": "page",
+                    "value": "1"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10"
+                  }
+                ]
+              },
+              "description": "Фільтрація та пошук. Редагуй Query Params вручну."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "6c9cf470-bcbf-4fc8-b79f-41fe569663c0"
+          },
+          {
+            "name": "GET /movies/:id (публічний деталі)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies/{{movieId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies",
+                  "{{movieId}}"
+                ]
+              },
+              "description": "Деталі одного активного фільму з рецензіями."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "0e4347ca-606e-4b95-b34d-50fbeeab202e"
+          },
+          {
+            "name": "GET /movies/admin (ADMIN — всі)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies/admin",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies",
+                  "admin"
+                ]
+              },
+              "description": "Список всіх фільмів (включно з деактивованими). 🔒 Потрібен ADMIN cookie."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "c7ed0d12-6887-4fd5-a7d6-88396050166c"
+          },
+          {
+            "name": "GET /movies/admin/:id (ADMIN — деталі)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies/admin/{{movieId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies",
+                  "admin",
+                  "{{movieId}}"
+                ]
+              },
+              "description": "Деталі фільму для адміна (незалежно від isActive). 🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "1b77fcb0-ea79-417c-8092-cabebc6407f2"
+          },
+          {
+            "name": "POST /movies (ADMIN — створити)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies"
+                ]
+              },
+              "description": "Створює новий фільм. 🔒 ADMIN cookie required.\nID збережеться автоматично у {{movieId}}.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"Test Movie from Postman\",\n  \"description\": \"Тестовий фільм для демонстрації API. Мінімум 10 символів.\",\n  \"releaseYear\": 2024,\n  \"posterUrl\": \"https://image.tmdb.org/t/p/w500/example.jpg\",\n  \"genreIds\": [],\n  \"actorIds\": [],\n  \"directorIds\": []\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                    "const r = pm.response.json();",
+                    "const id = r?.id || r?.data?.createMovie?.id;",
+                    "if (id) { pm.environment.set(\"movieId\", id); console.log(\"movieId saved:\", id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "3cc16298-7d18-4b7a-b1d6-754460663772"
+          },
+          {
+            "name": "PATCH /movies/:id (ADMIN — оновити)",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies/{{movieId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies",
+                  "{{movieId}}"
+                ]
+              },
+              "description": "Часткове оновлення фільму. 🔒 ADMIN.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"Updated Movie Title\",\n  \"description\": \"Оновлений опис фільму для демонстрації PATCH.\",\n  \"releaseYear\": 2025\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "5cc81f32-32ef-4459-92fb-41f9dc027eb3"
+          },
+          {
+            "name": "PATCH /movies/:id/deactivate (ADMIN)",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies/{{movieId}}/deactivate",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies",
+                  "{{movieId}}",
+                  "deactivate"
+                ]
+              },
+              "description": "Деактивує фільм (isActive → false). 🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "fd685bb7-38f0-4f2f-96d0-87353ae07faf"
+          },
+          {
+            "name": "PATCH /movies/:id/activate (ADMIN)",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies/{{movieId}}/activate",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies",
+                  "{{movieId}}",
+                  "activate"
+                ]
+              },
+              "description": "Активує фільм (isActive → true). 🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "b6846316-df06-4d6b-bffc-f9fb54236c7a"
+          },
+          {
+            "name": "DELETE /movies/:id (ADMIN)",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/movies/{{movieId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "movies",
+                  "{{movieId}}"
+                ]
+              },
+              "description": "Видаляє фільм. 🔒 ADMIN. Повертає 204 No Content."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 204\", () => pm.response.to.have.status(204));",
+                    "console.log(\"Movie deleted. movieId:\", pm.environment.get(\"movieId\"));"
+                  ]
+                }
+              }
+            ],
+            "id": "998e8b29-39e1-48dd-9d54-73aa2ae95dc0"
+          }
+        ],
+        "id": "8f937d9e-17ed-49ea-854d-eb6bdfd158e5"
+      },
+      {
+        "name": "🏷️ REST › Genres",
+        "description": "CRUD жанрів",
+        "item": [
+          {
+            "name": "GET /genres (публічний)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/genres",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "genres"
+                ]
+              },
+              "description": "Список всіх жанрів."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "const r = pm.response.json();",
+                    "if (r[0]) { pm.environment.set(\"genreId\", r[0].id); console.log(\"genreId set:\", r[0].id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "f6aa8c31-706b-4752-8cc8-2e8f3a61d430"
+          },
+          {
+            "name": "GET /genres/:id",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/genres/{{genreId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "genres",
+                  "{{genreId}}"
+                ]
+              },
+              "description": ""
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "03fab2dd-5145-42fe-ad6c-edb6047ac1c5"
+          },
+          {
+            "name": "POST /genres (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/genres",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "genres"
+                ]
+              },
+              "description": "Створити жанр. 🔒 ADMIN.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Test Genre Postman\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                    "const r = pm.response.json();",
+                    "if (r?.id) { pm.environment.set(\"genreId\", r.id); console.log(\"genreId saved:\", r.id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "e4d7a748-f576-466a-b631-1c1218e15681"
+          },
+          {
+            "name": "PATCH /genres/:id (ADMIN)",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/genres/{{genreId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "genres",
+                  "{{genreId}}"
+                ]
+              },
+              "description": "Оновити жанр. 🔒 ADMIN.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Updated Genre Name\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "f2e6d70e-7b4d-4556-8c12-874f94e3d358"
+          },
+          {
+            "name": "DELETE /genres/:id (ADMIN)",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/genres/{{genreId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "genres",
+                  "{{genreId}}"
+                ]
+              },
+              "description": "Видалити жанр. 🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                  ]
+                }
+              }
+            ],
+            "id": "39372a33-5991-4095-a1b0-6c09a9fb1aac"
+          }
+        ],
+        "id": "f9d3f928-d5a0-491a-89ec-9e56077598b9"
+      },
+      {
+        "name": "🎭 REST › Actors",
+        "description": "CRUD акторів",
+        "item": [
+          {
+            "name": "GET /actors",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/actors",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "actors"
+                ]
+              },
+              "description": "Список акторів. Query params: search, page, limit."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "const r = pm.response.json();",
+                    "if (r.data?.[0]) { pm.environment.set(\"actorId\", r.data[0].id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "9fe0eb43-42d1-4eba-9565-180503cb33cf"
+          },
+          {
+            "name": "GET /actors/:id",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/actors/{{actorId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "actors",
+                  "{{actorId}}"
+                ]
+              },
+              "description": ""
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "585916df-c4d2-4412-8f1e-40286028cd2c"
+          },
+          {
+            "name": "POST /actors (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/actors",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "actors"
+                ]
+              },
+              "description": "Створити актора. 🔒 ADMIN.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"firstName\": \"Keanu\",\n  \"lastName\": \"Reeves\",\n  \"photoUrl\": \"\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                    "const r = pm.response.json();",
+                    "if (r?.id) { pm.environment.set(\"actorId\", r.id); console.log(\"actorId saved:\", r.id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "fa10b4da-e360-476c-a9c4-b24fc00c04bd"
+          },
+          {
+            "name": "PATCH /actors/:id (ADMIN)",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/actors/{{actorId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "actors",
+                  "{{actorId}}"
+                ]
+              },
+              "description": "🔒 ADMIN.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"firstName\": \"Keanu\",\n  \"lastName\": \"Reeves Updated\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "28dcf98a-02d2-431a-bfdc-bb16c454581d"
+          },
+          {
+            "name": "DELETE /actors/:id (ADMIN)",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/actors/{{actorId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "actors",
+                  "{{actorId}}"
+                ]
+              },
+              "description": "🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                  ]
+                }
+              }
+            ],
+            "id": "8533f8e0-298e-44a9-b571-d04ddd089032"
+          }
+        ],
+        "id": "ed5458d1-d703-4761-be6d-76f105200c9a"
+      },
+      {
+        "name": "🎥 REST › Directors",
+        "description": "CRUD режисерів",
+        "item": [
+          {
+            "name": "GET /directors",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/directors",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "directors"
+                ]
+              },
+              "description": ""
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                    "const r = pm.response.json();",
+                    "if (r.data?.[0]) { pm.environment.set(\"directorId\", r.data[0].id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "eb848be8-8ae4-4519-80a0-043dcf4391df"
+          },
+          {
+            "name": "GET /directors/:id",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/directors/{{directorId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "directors",
+                  "{{directorId}}"
+                ]
+              },
+              "description": ""
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "ac7cb9b1-dd3d-41a8-88a6-bd22a724f935"
+          },
+          {
+            "name": "POST /directors (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/directors",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "directors"
+                ]
+              },
+              "description": "🔒 ADMIN.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"firstName\": \"Christopher\",\n  \"lastName\": \"Nolan\",\n  \"photoUrl\": \"\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                    "const r = pm.response.json();",
+                    "if (r?.id) { pm.environment.set(\"directorId\", r.id); console.log(\"directorId saved:\", r.id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "783e6dcb-e386-48ee-8d55-305cb920d576"
+          },
+          {
+            "name": "PATCH /directors/:id (ADMIN)",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/directors/{{directorId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "directors",
+                  "{{directorId}}"
+                ]
+              },
+              "description": "🔒 ADMIN.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"lastName\": \"Nolan Updated\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "9e97cc05-23bc-42ea-a062-88fd12ffc5c2"
+          },
+          {
+            "name": "DELETE /directors/:id (ADMIN)",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/directors/{{directorId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "directors",
+                  "{{directorId}}"
+                ]
+              },
+              "description": "🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                  ]
+                }
+              }
+            ],
+            "id": "10cf4c19-6047-4257-999f-3f2d46f1038c"
+          }
+        ],
+        "id": "024b7d6a-1d86-446a-8110-a7e72be37a0c"
+      },
+      {
+        "name": "⭐ REST › Reviews",
+        "description": "Рецензії до фільмів",
+        "item": [
+          {
+            "name": "GET /reviews/movie/:id (публічний)",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/reviews/movie/{{movieId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "reviews",
+                  "movie",
+                  "{{movieId}}"
+                ]
+              },
+              "description": "Список рецензій для фільму. Query: page, limit."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                  ]
+                }
+              }
+            ],
+            "id": "60789315-cdf5-4670-80ea-2f5fc5420de8"
+          },
+          {
+            "name": "POST /reviews (USER/ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/reviews",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "reviews"
+                ]
+              },
+              "description": "Залишити рецензію. 🔒 Авторизований user. Один user — одна рецензія на фільм.",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"movieId\": \"{{movieId}}\",\n  \"text\": \"Чудовий фільм! Рекомендую.\",\n  \"rating\": 5\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                    "const r = pm.response.json();",
+                    "const id = r?.id || r?.data?.createReview?.id;",
+                    "if (id) { pm.environment.set(\"reviewId\", id); console.log(\"reviewId saved:\", id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "dd03866a-bbb9-45e3-a331-db7515ea239f"
+          },
+          {
+            "name": "DELETE /reviews/:id (власник або ADMIN)",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/reviews/{{reviewId}}",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "reviews",
+                  "{{reviewId}}"
+                ]
+              },
+              "description": "Видалити рецензію. 🔒 Власник або ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                  ]
+                }
+              }
+            ],
+            "id": "93b742a5-0bd6-4712-9c4b-a3f581e7b793"
+          }
+        ],
+        "id": "49be3dbb-ce00-4a81-bbaa-a860058d5969"
+      },
+      {
+        "name": "🔷 GraphQL › Queries",
+        "description": "Запити на читання даних",
+        "item": [
+          {
+            "name": "movies (список з фільтром)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"query Movies($filter: MovieFilterInput) {\\n  movies(filter: $filter) {\\n    data {\\n      id\\n      title\\n      description\\n      releaseYear\\n      posterUrl\\n      isActive\\n      genres { id name }\\n      directors { id firstName lastName }\\n    }\\n    total\\n    page\\n    limit\\n  }\\n}\",\n  \"variables\": {\n    \"filter\": {\n      \"page\": 1,\n      \"limit\": 10\n    }\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Публічний список активних фільмів. Змінюй variables для фільтрації."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "const r = pm.response.json();",
+                    "pm.test(\"Has movies data\", () => pm.expect(r.data.movies.data).to.be.an(\"array\"));",
+                    "if (r.data?.movies?.data?.[0]) { pm.environment.set(\"movieId\", r.data.movies.data[0].id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "bdbaf6aa-20a2-46ff-b7fa-a289e2991e77"
+          },
+          {
+            "name": "movie (деталі одного фільму)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"query Movie($id: ID!) {\\n  movie(id: $id) {\\n    id\\n    title\\n    description\\n    releaseYear\\n    posterUrl\\n    isActive\\n    genres { id name }\\n    actors { id firstName lastName photoUrl }\\n    directors { id firstName lastName photoUrl }\\n    reviews {\\n      id\\n      text\\n      rating\\n      createdAt\\n      user { firstName lastName }\\n    }\\n  }\\n}\",\n  \"variables\": {\n    \"id\": \"{{movieId}}\"\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Деталі одного фільму за ID. Підставляє {{movieId}} з Environment."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "pm.test(\"Has movie title\", () => pm.expect(pm.response.json().data.movie.title).to.be.a(\"string\"));"
+                  ]
+                }
+              }
+            ],
+            "id": "2493ab98-2928-4f37-b6d6-3c1122fd5e7a"
+          },
+          {
+            "name": "genres (всі жанри)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"query Genres {\\n  genres {\\n    id\\n    name\\n  }\\n}\",\n  \"variables\": {}\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Публічний список жанрів."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "const genres = pm.response.json().data.genres;",
+                    "pm.test(\"Has genres\", () => pm.expect(genres).to.be.an(\"array\"));",
+                    "if (genres?.[0]) { pm.environment.set(\"genreId\", genres[0].id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "b811f55b-9fc4-408b-a608-b7e266a9953f"
+          },
+          {
+            "name": "actors (список акторів)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"query Actors($filter: QueryActorInput) {\\n  actors(filter: $filter) {\\n    data { id firstName lastName photoUrl }\\n    total page limit\\n  }\\n}\",\n  \"variables\": {\n    \"filter\": {\n      \"page\": 1,\n      \"limit\": 20\n    }\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Список акторів через GraphQL."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});"
+                  ]
+                }
+              }
+            ],
+            "id": "147d39aa-80da-4290-bfc0-e429806f9539"
+          },
+          {
+            "name": "directors (список режисерів)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"query Directors {\\n  directors {\\n    data { id firstName lastName photoUrl }\\n    total\\n  }\\n}\",\n  \"variables\": {}\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Список режисерів через GraphQL."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});"
+                  ]
+                }
+              }
+            ],
+            "id": "1354daac-84cd-4da0-b29a-b229ee64b342"
+          },
+          {
+            "name": "moviesAdmin (ADMIN — всі фільми)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"query MoviesAdmin($filter: MovieFilterInput) {\\n  moviesAdmin(filter: $filter) {\\n    data {\\n      id\\n      title\\n      isActive\\n      releaseYear\\n      genres { name }\\n    }\\n    total page limit\\n  }\\n}\",\n  \"variables\": {\n    \"filter\": {\n      \"page\": 1,\n      \"limit\": 20\n    }\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Список усіх фільмів для адміна (включно deactivated). 🔒 ADMIN cookie required."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "pm.test(\"No GQL errors (need ADMIN cookie)\", () => pm.expect(pm.response.json().errors).to.be.undefined);"
+                  ]
+                }
+              }
+            ],
+            "id": "d1eccdec-cc81-40d7-aa15-30e5fdc90f12"
+          }
+        ],
+        "id": "2ffa106e-f212-490e-8703-1cc02695adb5"
+      },
+      {
+        "name": "🔷 GraphQL › Mutations",
+        "description": "Операції запису (потрібен ADMIN cookie)",
+        "item": [
+          {
+            "name": "createMovie (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"mutation CreateMovie($input: CreateMovieInput!) {\\n  createMovie(input: $input) {\\n    id\\n    title\\n    releaseYear\\n    isActive\\n    genres { id name }\\n  }\\n}\",\n  \"variables\": {\n    \"input\": {\n      \"title\": \"GraphQL Test Movie\",\n      \"description\": \"Фільм створений через GraphQL мутацію для демонстрації.\",\n      \"releaseYear\": 2024,\n      \"genreIds\": [],\n      \"actorIds\": [],\n      \"directorIds\": []\n    }\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Створити фільм через GraphQL. 🔒 ADMIN.\nID збережеться у {{movieId}}."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "const r = pm.response.json();",
+                    "const id = r?.data?.createMovie?.id;",
+                    "if (id) { pm.environment.set(\"movieId\", id); console.log(\"GQL movieId saved:\", id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "b3a48bc9-a914-458c-ae4b-a61f248ed032"
+          },
+          {
+            "name": "updateMovie (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"mutation UpdateMovie($id: ID!, $input: UpdateMovieInput!) {\\n  updateMovie(id: $id, input: $input) {\\n    id\\n    title\\n    releaseYear\\n    isActive\\n  }\\n}\",\n  \"variables\": {\n    \"id\": \"{{movieId}}\",\n    \"input\": {\n      \"title\": \"Updated via GraphQL Mutation\",\n      \"releaseYear\": 2025\n    }\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Оновити фільм через GraphQL. 🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "pm.test(\"Title updated\", () => pm.expect(pm.response.json().data.updateMovie.title).to.include(\"GraphQL\"));"
+                  ]
+                }
+              }
+            ],
+            "id": "09c5dbcf-8be8-4825-b2ac-0eadaaae67d7"
+          },
+          {
+            "name": "deactivateMovie (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"mutation DeactivateMovie($id: ID!) {\\n  deactivateMovie(id: $id) {\\n    id\\n    title\\n    isActive\\n  }\\n}\",\n  \"variables\": {\n    \"id\": \"{{movieId}}\"\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Деактивувати фільм. 🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "pm.test(\"isActive false\", () => pm.expect(pm.response.json().data.deactivateMovie.isActive).to.be.false);"
+                  ]
+                }
+              }
+            ],
+            "id": "199defd5-d87e-4ab9-bad6-47f9e019c11a"
+          },
+          {
+            "name": "activateMovie (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"mutation ActivateMovie($id: ID!) {\\n  activateMovie(id: $id) {\\n    id\\n    title\\n    isActive\\n  }\\n}\",\n  \"variables\": {\n    \"id\": \"{{movieId}}\"\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Активувати фільм. 🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "pm.test(\"isActive true\", () => pm.expect(pm.response.json().data.activateMovie.isActive).to.be.true);"
+                  ]
+                }
+              }
+            ],
+            "id": "52334e60-3852-4a7f-880f-0997145918c1"
+          },
+          {
+            "name": "deleteMovie (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"mutation DeleteMovie($id: ID!) {\\n  deleteMovie(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": \"{{movieId}}\"\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Видалити фільм через GraphQL. 🔒 ADMIN. Повертає true."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "pm.test(\"Deleted true\", () => pm.expect(pm.response.json().data.deleteMovie).to.be.true);"
+                  ]
+                }
+              }
+            ],
+            "id": "248bf9a2-1291-4397-8ea4-af062cc7e2ee"
+          },
+          {
+            "name": "createReview (USER/ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"mutation CreateReview($input: CreateReviewInput!) {\\n  createReview(input: $input) {\\n    id\\n    text\\n    rating\\n    createdAt\\n    user { firstName lastName }\\n  }\\n}\",\n  \"variables\": {\n    \"input\": {\n      \"movieId\": \"{{movieId}}\",\n      \"text\": \"Надзвичайний фільм! GraphQL review.\",\n      \"rating\": 5\n    }\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Залишити рецензію через GraphQL. 🔒 Авторизований user."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "const r = pm.response.json();",
+                    "const id = r?.id || r?.data?.createReview?.id;",
+                    "if (id) { pm.environment.set(\"reviewId\", id); console.log(\"reviewId saved:\", id); }"
+                  ]
+                }
+              }
+            ],
+            "id": "b31e34c2-2836-402b-8eb1-cbfa00c7386a"
+          },
+          {
+            "name": "deleteReview (власник або ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"mutation DeleteReview($id: ID!) {\\n  deleteReview(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": \"{{reviewId}}\"\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Видалити рецензію. 🔒 Власник або ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "pm.test(\"Deleted\", () => pm.expect(pm.response.json().data.deleteReview).to.be.true);"
+                  ]
+                }
+              }
+            ],
+            "id": "c9e26421-b7ab-40f1-860d-6e12e9ed421c"
+          },
+          {
+            "name": "createGenre (ADMIN)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"query\": \"mutation CreateGenre($input: CreateGenreInput!) {\\n  createGenre(input: $input) {\\n    id\\n    name\\n  }\\n}\",\n  \"variables\": {\n    \"input\": {\n      \"name\": \"GQL Test Genre\"\n    }\n  }\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "{{baseUrl}}/graphql",
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "graphql"
+                ]
+              },
+              "description": "Створити жанр через GraphQL. 🔒 ADMIN."
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test(\"No GQL errors\", () => {",
+                    "  const r = pm.response.json();",
+                    "  pm.expect(r.errors).to.be.undefined;",
+                    "});",
+                    "const id = pm.response.json().data?.createGenre?.id;",
+                    "if (id) pm.environment.set(\"genreId\", id);"
+                  ]
+                }
+              }
+            ],
+            "id": "9e080c9f-9c4d-4855-80c3-bba13521a5cb"
+          }
+        ],
+        "id": "49c61eda-c6aa-4973-813b-60463f2e76fd"
+      }
+    ],
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "http://localhost:3001",
+        "type": "string"
+      }
+    ]
+  }
+}
