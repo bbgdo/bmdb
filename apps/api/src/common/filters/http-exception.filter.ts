@@ -10,6 +10,7 @@ import { Request, Response } from "express"
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
+    if (host.getType<"http" | "graphql">() === "graphql") throw exception
     const ctx = host.switchToHttp()
     const res = ctx.getResponse<Response>()
     const req = ctx.getRequest<Request>()
