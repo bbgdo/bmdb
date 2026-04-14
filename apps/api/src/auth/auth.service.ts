@@ -83,7 +83,7 @@ export class AuthService {
 		const user = await this.prisma.user.findUnique({ where: { verifyToken: token } })
 		if (!user) throw new NotFoundException("Invalid verification token")
 		// Keep verifyToken in DB (don't null it) so repeated calls with the same
-		// token (e.g. React StrictMode double-invoke) still find the user and
+		// token still find the user and
 		// return success instead of 404.
 		await this.prisma.user.update({
 			where: { id: user.id },
