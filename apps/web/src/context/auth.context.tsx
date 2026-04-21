@@ -1,4 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react"
+"use client"
+
+import { createContext, useContext, useState } from "react"
 import { getMe, logoutUser, type AuthUser } from "@/api/auth"
 
 type AuthContextType = {
@@ -10,16 +12,24 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+type AuthProviderProps = {
+  initialUser: AuthUser | null
+  children: React.ReactNode
+}
+
+export const AuthProvider = ({ initialUser, children }: AuthProviderProps) => {
+  const [user, setUser] = useState<AuthUser | null>(initialUser)
+  const [isLoading, setIsLoading] = useState(false)
 
   const refetch = async () => {
+    setIsLoading(true)
     try {
       const me = await getMe()
       setUser(me)
     } catch {
       setUser(null)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -28,12 +38,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null)
   }
 
-  useEffect(() => {
-    void (async () => {
-      await refetch().finally(() => setIsLoading(false))
-    })()
-  }, [])
-
   return (
     <AuthContext value={{ user, isLoading, refetch, logout }}>
       {children}
@@ -41,7 +45,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error("useAuth must be used inside AuthProvider")

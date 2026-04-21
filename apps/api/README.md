@@ -35,7 +35,7 @@ Key variables:
 |-------------------------|------------------------------------|------------------------|
 | `DATABASE_URL`          | PostgreSQL connection string       | (see .env.example)     |
 | `API_PORT`              | Port the server listens on         | `3001`                 |
-| `FRONTEND_URL`          | Allowed CORS origin                | `http://localhost:5173`|
+| `FRONTEND_URL`          | Allowed CORS origin                | `http://localhost:3000`|
 | `JWT_SECRET`            | Access token signing key           | —                      |
 | `JWT_REFRESH_SECRET`    | Refresh token signing key          | —                      |
 | `JWT_EXPIRES_IN`        | Access token TTL                   | `15m`                  |

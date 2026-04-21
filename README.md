@@ -2,31 +2,31 @@
 
 A full-stack movie database application. Users can browse movies, write reviews, and manage accounts. Admins can manage the full catalog via a dedicated panel.
 
-The project is a pnpm monorepo with two applications — a NestJS API and a React frontend — and a shared `packages/types` package.
+The project is a pnpm monorepo with two applications: a NestJS API and a Next.js frontend, plus a shared `packages/types` package.
 
 ## Repository structure
 
-```
+```text
 bmdb/
-├── apps/
-│   ├── api/          # NestJS backend (REST + GraphQL)
-│   └── web/          # React frontend (Vite)
-├── packages/
-│   └── types/        # Shared TypeScript types
-├── docker-compose.yml
-├── .env.example
-└── package.json
++-- apps/
+|   +-- api/          # NestJS backend (REST + GraphQL)
+|   +-- web/          # Next.js frontend
++-- packages/
+|   +-- types/        # Shared TypeScript types
++-- docker-compose.yml
++-- .env.example
++-- package.json
 ```
 
 ## Tech stack
 
-| Layer          | Technology                                    |
-|----------------|-----------------------------------------------|
-| Frontend       | React 19, Vite 8, Tailwind CSS v4, shadcn/ui  |
-| Backend        | NestJS 10, Apollo Server 4, GraphQL           |
-| Database       | PostgreSQL 16, Prisma 5                       |
-| Auth           | JWT (access + refresh tokens), Passport.js    |
-| Package manager| pnpm 10 (workspaces)                          |
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js, React 19, Tailwind CSS v4, shadcn/ui |
+| Backend | NestJS 10, Apollo Server 4, GraphQL |
+| Database | PostgreSQL 16, Prisma 5 |
+| Auth | JWT access and refresh cookies, Passport.js |
+| Package manager | pnpm 10 workspaces |
 
 ## Local setup
 
@@ -34,7 +34,7 @@ bmdb/
 
 - Node.js >= 20
 - pnpm >= 10 (`npm i -g pnpm`)
-- Docker (for PostgreSQL)
+- Docker for PostgreSQL
 
 ### 1. Install dependencies
 
@@ -46,9 +46,11 @@ pnpm install
 
 ```bash
 cp .env.example .env
-# Required: JWT_SECRET, JWT_REFRESH_SECRET (any random strings)
-# Required for registration: EMAIL_HOST, EMAIL_USER, EMAIL_PASS
 ```
+
+Set `JWT_SECRET` and `JWT_REFRESH_SECRET` to random strings. Configure `EMAIL_HOST`, `EMAIL_USER`, and `EMAIL_PASS` if you want registration emails to be sent.
+
+By default, the API runs on `http://localhost:3001`, the web app runs on `http://localhost:3000`, and the Next.js app proxies `/api/*` and `/graphql` to the API through `API_URL`.
 
 ### 3. Start the database
 
@@ -67,12 +69,11 @@ pnpm seed
 ### 5. Start both apps
 
 ```bash
-# From the root — starts api and web in parallel
 pnpm dev
 ```
 
 - API: http://localhost:3001
-- Web: http://localhost:5173
+- Web: http://localhost:3000
 - GraphQL Playground: http://localhost:3001/graphql
 
 ### Default admin credentials

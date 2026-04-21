@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom"
+import Link from "next/link"
 import type { Movie } from "@/types/movie"
 
 type Props = { movie: Movie }
 
 const MovieCard = ({ movie }: Props) => (
-  <Link to={`/movies/${movie.id}`}>
+  <Link href={`/movies/${movie.id}`}>
     <div className="rounded-lg border bg-card overflow-hidden flex flex-col hover:shadow-md transition-shadow h-full">
       {movie.posterUrl ? (
         <img

@@ -1,13 +1,28 @@
-import { Link, Outlet } from "react-router-dom"
+"use client"
+
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/auth.context"
 import { Button } from "@/components/ui/button"
 
-const Layout = () => {
+type Props = {
+  children: React.ReactNode
+}
+
+const Layout = ({ children }: Props) => {
   const { user, logout } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await logout()
+    router.refresh()
+    router.push("/")
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b px-6 py-3 flex items-center justify-between">
-        <Link to="/" className="font-semibold text-lg">
+        <Link href="/" className="font-semibold text-lg">
           BMDB
         </Link>
         <nav className="flex items-center gap-3">
@@ -17,22 +32,22 @@ const Layout = () => {
                 Hi, {user.firstName}
               </span>
               {user.role === "ADMIN" && (
-                <Link to="/admin" className="text-sm">
+                <Link href="/admin" className="text-sm">
                   Admin
                 </Link>
               )}
-              <Button variant="outline" size="sm" onClick={logout}>
+              <Button variant="outline" size="sm" onClick={handleLogout}>
                 Logout
               </Button>
             </>
           ) : (
             <>
-              <Link to="/login">
+              <Link href="/login">
                 <Button variant="ghost" size="sm">
                   Login
                 </Button>
               </Link>
-              <Link to="/register">
+              <Link href="/register">
                 <Button size="sm">Register</Button>
               </Link>
             </>
@@ -40,7 +55,7 @@ const Layout = () => {
         </nav>
       </header>
       <main className="flex-1">
-        <Outlet />
+        {children}
       </main>
     </div>
   )

@@ -39,7 +39,7 @@ const bootstrap = async () => {
   app.useGlobalFilters(new AllExceptionsFilter())
 
   app.enableCors({
-    origin: config.get("FRONTEND_URL", "http://localhost:5173"),
+    origin: config.get("FRONTEND_URL", "http://localhost:3000"),
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
